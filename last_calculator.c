@@ -64,19 +64,19 @@ int table_pins[]={9,10,11};
 int input_pins[button_groups]={A0,A1,A2,A3,A4};
 
 #define zero	1<<0
-#define one		1<<1
-#define two		1<<2
+#define one	1<<1
+#define two	1<<2
 #define three	1<<3
 #define four	1<<4
 #define five	1<<5
-#define six		1<<6
+#define six	1<<6
 #define seven	1<<7
 #define eight	1<<8
 #define nine	1<<9
-#define equ		1<<10//	=
+#define equ	1<<10//	=
 #define clear	1<<11//	C
 #define multp	1<<12//	X
-#define add		1<<13//	+
+#define add	1<<13//	+
 int value01=100;
 int value12=350;
 int value23=700;
@@ -153,7 +153,6 @@ int eventHandler(HANDLE_ handle){
 		if(stage==1){
 			if(operator==0) operands[2]=operands[0]+operands[1];
 			if(operator==1) operands[2]=operands[0]*operands[1];
-			delay(1200);
 		}
 		stage=2;
 	}else return -1;
