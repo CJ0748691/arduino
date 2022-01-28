@@ -1,67 +1,11 @@
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
-#include<windows.h>
-#define INPUT 0
-#define OUTPUT 1
-char* MODE[]={"INPUT","OUTPUT"};
-#define LOW 0
-#define HIGH 1
-char* DIGITAL[]={"LOW","HIGH"};
-#define A0 0
-#define A1 1
-#define A2 2
-#define A3 3
-#define A4 4
-
-
-void pinMode(int pin, int mode){
-	printf("pin %d setup to %s\n",pin,MODE[mode]);
-}
-
-void digitalWrite(int pin, int value){
-	//printf("pin %d Write to %s\n",pin,DIGITAL[value]);
-}
-
-void analogWrite(int pin, int value){
-	printf("pin %d Write to %d",pin,value);
-}
-
-*/int count=0;
-int last[5]={1,2,3,4,5};
-int analogRead(int pin){
-	if(!(rand()%20))
-		last[pin]=(rand()%250)*(rand()%5);
-	if(last[pin]>100) count++;
-	if(count>10){
-		count=0;
-		last[pin]=87;
-	}
-	return last[pin];
-}
-void delay(int time){
-	Sleep(time);
-}
-
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-
-
 #define LEDs 7
 #define tables 3
-#define button_groups 5
-#define inputs 14
 
-//use HANDLE_ to send the event signal
-typedef int HANDLE_;
 
 int LED_pins[]={2,3,4,5,6,7,8};
-int table_pins[]={9,10,11};
-int input_pins[button_groups]={A0,A1,A2,A3,A4};
+int table_pins[]={11,10,9};
+int input_pins[5]={A0,A1,A2,A3,A4};
 
 #define zero	1<<0
 #define one		1<<1
@@ -98,8 +42,8 @@ int digital_mapping[10][7]={
 
 
 void lightUp();
-HANDLE_ check_Input();
-int eventHandler(HANDLE_);
+int check_Input();
+int eventHandler(int);
 
 void setup(){
 	for(int i=0;i<LEDs;i++){
@@ -114,21 +58,23 @@ void setup(){
 }
 
 void loop(){	
-	static HANDLE_ handleButton=0;
+	static int handleButton=0;
 	
 	if(handleButton=check_Input()){
 		eventHandler(check_Input());
 		while(check_Input()) lightUp();		
-	}else lightUp();
+	}else{
+		lightUp();
+	}
 }
 
 
 
 
-int eventHandler(HANDLE_ handle){
+int eventHandler(int handle){
 	static int stage=0;
 	static int operands[]={0,0,0};
-	static int operator=0;//0 is add, 1 is multp
+	static int the_operator=0;//0 is add, 1 is multp
 	
 	//configure an operand to represent
 	if(stage==2 || handle & clear){
@@ -143,21 +89,21 @@ int eventHandler(HANDLE_ handle){
 			}
 		}
 	}else if(handle & add){
-		operator=0;
+		the_operator=0;
 		stage=1;
-	}		
-	else if(handle & multp){
-		operator=1;
+	}else if(handle & multp){
+		the_operator=1;
 		stage=1;
 	}else if(handle & equ){
 		if(stage==1){
-			if(operator==0) operands[2]=operands[0]+operands[1];
-			if(operator==1) operands[2]=operands[0]*operands[1];
+			if(the_operator==0) operands[2]=operands[0]+operands[1];
+			if(the_operator==1) operands[2]=operands[0]*operands[1];
 			delay(1200);
 		}
 		stage=2;
-	}else return -1;
-	
+	}else{
+		return -1;
+	}
 	//upload
 	buffer[0]=(operands[stage]/1)%10;
 	buffer[1]=(operands[stage]/10)%10;
@@ -181,7 +127,7 @@ void lightUp(){
 	}
 }
 
-HANDLE_ check_Input(){
+int check_Input(){
 	static int little_map[]={
 		clear,multp,add,
 		seven,eight,nine,
@@ -189,36 +135,23 @@ HANDLE_ check_Input(){
 		one,two,three,
 		0,zero,equ};
 		
-	HANDLE_ input_signal=0;
+	int input_signal=0;
 	
-	HANDLE_ read_value;
+	int read_value;
 
 	for(int i=0;i<5;i++){
 		read_value=analogRead(input_pins[i]);
 		//printf("pin %d read: %d\n",i,read_value);
-		if(read_value<value01)
+		if(read_value<value01){
 			continue;
-		if(read_value<value12)
+		}if(read_value<value12){
 			input_signal |= little_map[3*i+2];
-		else if(read_value<value23)
+		}else if(read_value<value23){
 			input_signal |= little_map[3*i+1];
-		else
+		}else{
 			input_signal |= little_map[3*i];		
+		}
 	}
 	return input_signal;
-}
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-
-int main(){
-	srand(time(NULL));
-	setup();
-	while(1){
-		loop();
-	}
-	return 0;
 }
 

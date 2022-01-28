@@ -1,0 +1,20 @@
+static HANDLE_ handleButton=0;
+	
+	printf("\t\t\t\tentering loop\n\n");
+	//event process is only depended on the pressing moment
+	if(handleButton=check_Input()^handleButton){
+		// on Clicking, send an event
+		eventHandler(handleButton);
+	}
+	// on Standby or pressing, Keeping Light
+	
+	printf("\t\t\t\tentering while\n\n");
+	while(!(handleButton^check_Input())){
+		printf("\t\t inputs \t%d \t%d \t%d \t%d \t%d\n",last[0],last[1],last[2],last[3],last[4]);
+		lightUp();
+	}
+	
+	printf("\t\t\t\tleave\n\n");
+
+	
+	//delay(70);

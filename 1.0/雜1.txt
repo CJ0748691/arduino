@@ -1,0 +1,44 @@
+// before calling this  function,
+	// you should assign table_nums
+	// (remember? the "int table_nums[tables]=...")
+	lightUp();
+
+
+類比讀取值0 1023
+類比輸出值0 255
+
+
+
+
+void uploadTable(int t1, int t2, int t3){
+	/*
+	switch(mode){
+		case 0:
+			
+		case 1:
+	}*/
+	table_nums[0]=t1,table_nums[1]=t2,table_nums[2]=t3,
+	/*for(int i = 0;i<3;i++){
+		
+	}*/
+}
+
+
+
+#define button_inc		1<<0
+#define button_next		1<<1
+
+
+
+		// on Pressing, Keeping Light
+		waiting_for_event
+
+		// on Standby, Keeping Light
+		waiting_for_event
+
+
+
+#define waiting_for_event \
+	while(!(handleButton^check_Input())){ \
+		lightUp(); \
+	}
